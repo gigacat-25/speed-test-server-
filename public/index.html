@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Test your internet connection speed with our open source speed test server. Measure download, upload speeds and latency.">
+    <title>Speed Test - Measure Your Internet Speed</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="background-animation"></div>
+    
+    <div class="container">
+        <header class="header">
+            <h1 class="logo">
+                <span class="logo-icon">⚡</span>
+                <span class="logo-text">SpeedTest</span>
+            </h1>
+            <p class="tagline">Measure Your Internet Connection Speed</p>
+        </header>
+
+        <main class="main-content">
+            <!-- Test Controls -->
+            <div class="test-controls">
+                <button id="startBtn" class="start-button">
+                    <span class="button-icon">▶</span>
+                    <span class="button-text">Start Test</span>
+                </button>
+            </div>
+
+            <!-- Speed Gauges -->
+            <div class="gauges-container">
+                <!-- Download Speed Gauge -->
+                <div class="gauge-card">
+                    <div class="gauge-header">
+                        <span class="gauge-icon">⬇</span>
+                        <h3>Download</h3>
+                    </div>
+                    <div class="gauge">
+                        <svg class="gauge-svg" viewBox="0 0 200 120">
+                            <path class="gauge-bg" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke-width="12" stroke-linecap="round"/>
+                            <path id="downloadGauge" class="gauge-progress" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke-width="12" stroke-linecap="round"/>
+                        </svg>
+                        <div class="gauge-value">
+                            <span id="downloadSpeed" class="speed-number">0</span>
+                            <span class="speed-unit">Mbps</span>
+                        </div>
+                    </div>
+                    <div class="gauge-status" id="downloadStatus">Ready</div>
+                </div>
+
+                <!-- Upload Speed Gauge -->
+                <div class="gauge-card">
+                    <div class="gauge-header">
+                        <span class="gauge-icon">⬆</span>
+                        <h3>Upload</h3>
+                    </div>
+                    <div class="gauge">
+                        <svg class="gauge-svg" viewBox="0 0 200 120">
+                            <path class="gauge-bg" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke-width="12" stroke-linecap="round"/>
+                            <path id="uploadGauge" class="gauge-progress" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke-width="12" stroke-linecap="round"/>
+                        </svg>
+                        <div class="gauge-value">
+                            <span id="uploadSpeed" class="speed-number">0</span>
+                            <span class="speed-unit">Mbps</span>
+                        </div>
+                    </div>
+                    <div class="gauge-status" id="uploadStatus">Ready</div>
+                </div>
+
+                <!-- Ping/Latency -->
+                <div class="gauge-card">
+                    <div class="gauge-header">
+                        <span class="gauge-icon">📡</span>
+                        <h3>Latency</h3>
+                    </div>
+                    <div class="ping-display">
+                        <div class="ping-value">
+                            <span id="pingSpeed" class="speed-number">0</span>
+                            <span class="speed-unit">ms</span>
+                        </div>
+                    </div>
+                    <div class="gauge-status" id="pingStatus">Ready</div>
+                </div>
+            </div>
+
+            <!-- Results Panel -->
+            <div id="resultsPanel" class="results-panel hidden">
+                <h2 class="results-title">Test Results</h2>
+                <div class="results-grid">
+                    <div class="result-item">
+                        <div class="result-label">Download Speed</div>
+                        <div class="result-value">
+                            <span id="resultDownload">0</span> Mbps
+                        </div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Upload Speed</div>
+                        <div class="result-value">
+                            <span id="resultUpload">0</span> Mbps
+                        </div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Ping</div>
+                        <div class="result-value">
+                            <span id="resultPing">0</span> ms
+                        </div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Test Date</div>
+                        <div class="result-value" id="resultDate">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test History -->
+            <div class="history-section">
+                <h2 class="history-title">Test History</h2>
+                <div id="historyContainer" class="history-container">
+                    <p class="history-empty">No previous tests. Run a test to see results here.</p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>Open Source Speed Test Server • <a href="https://github.com" target="_blank">View on GitHub</a></p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
