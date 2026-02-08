@@ -27,6 +27,13 @@ app.get('/api/config', (req, res) => {
   });
 });
 
+// Pre-allocate buffer for download test to avoid CPU spike
+const DOWNLOAD_BUFFER_SIZE = 10 * 1024 * 1024; // 10 MB
+const downloadBuffer = crypto.randomBytes(DOWNLOAD_BUFFER_SIZE);
+
+// Favicon to prevent 404s
+app.get('/favicon.ico', (req, res) => res.status(204).end());
+
 // Download speed test endpoint
 app.get('/api/download', (req, res) => {
   const chunkSize = 1024 * 1024; // 1 MB chunks
@@ -50,15 +57,21 @@ app.get('/api/download', (req, res) => {
     const remainingBytes = totalSize - bytesSent;
     const currentChunkSize = Math.min(chunkSize, remainingBytes);
 
-    // Generate random data
-    const chunk = crypto.randomBytes(currentChunkSize);
+    // Use pre-allocated buffer, rotating through it
+    const start = bytesSent % (DOWNLOAD_BUFFER_SIZE - currentChunkSize);
+    const chunk = downloadBuffer.slice(start, start + currentChunkSize);
 
     bytesSent += currentChunkSize;
-    res.write(chunk, (err) => {
-      if (!err) {
-        setImmediate(sendChunk);
-      }
-    });
+
+    // Check if we should continue sending or wait for drain
+    const canContinue = res.write(chunk);
+
+    if (canContinue) {
+      setImmediate(sendChunk);
+    } else {
+      // Wait for 'drain' event before sending more
+      res.once('drain', sendChunk);
+    }
   };
 
   sendChunk();
