@@ -58,7 +58,7 @@ class SpeedTest {
 
         } catch (error) {
             console.error('Speed test error:', error);
-            alert('An error occurred during the speed test. Please try again.');
+            alert(`An error occurred: ${error.message}. Please try again.`);
         } finally {
             this.isRunning = false;
             this.startBtn.classList.remove('testing');
@@ -162,16 +162,21 @@ class SpeedTest {
         const testDuration = 10000; // 10 seconds
         const chunkSize = 1 * 1024 * 1024; // 1 MB chunks
 
+        // Pre-allocate buffer to avoid CPU overhead during test
+        const data = new Uint8Array(chunkSize);
+        // Fill buffer in 64KB chunks to avoid QuotaExceededError
+        const maxBytes = 65536;
+        for (let i = 0; i < chunkSize; i += maxBytes) {
+            const length = Math.min(maxBytes, chunkSize - i);
+            crypto.getRandomValues(data.subarray(i, i + length));
+        }
+
         let totalBytes = 0;
         const startTime = performance.now();
         let lastUpdateTime = startTime;
 
         while (performance.now() - startTime < testDuration) {
             try {
-                // Generate random data
-                const data = new Uint8Array(chunkSize);
-                crypto.getRandomValues(data);
-
                 const chunkStartTime = performance.now();
 
                 await fetch(`${this.baseUrl}/api/upload`, {
@@ -179,7 +184,7 @@ class SpeedTest {
                     headers: {
                         'Content-Type': 'application/octet-stream'
                     },
-                    body: data
+                    body: data // Reuse pre-allocated buffer
                 });
 
                 totalBytes += chunkSize;
